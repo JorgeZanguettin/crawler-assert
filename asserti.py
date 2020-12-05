@@ -26,7 +26,7 @@ class Crawler():
                 'telefone_empresa' : self.tratarString(soup_empresa.select_one("span#lblTelefone")),
                 'endereco_empresa' : self.tratarString(soup_empresa.select_one("span#lblEndereco")),
                 'email_empresa' : self.tratarString(soup_empresa.select_one("span#lblEmail")),
-                'site_empresa' : self.tratarString(soup_empresa.select_one("span#lnkSite")),
+                'site_empresa' : self.tratarString(soup_empresa.select_one("a#lnkSite"), True),
                 'atuacao_empresa' : self.tratarString(soup_empresa.select_one("textarea#txtAtuacao")),
             }
 
@@ -46,10 +46,16 @@ class Crawler():
 
         file.close()
 
-    def tratarString(self, obj_bs4):
+    def tratarString(self, obj_bs4, url = False):
         if obj_bs4 != None:
-            return unidecode(str(obj_bs4.text).replace('\r','').replace('\n','').strip())
+            if url == False:
+                return unidecode(str(obj_bs4.text).replace('\r','').replace('\n','').strip())
+            else:
+                if 'href' in obj_bs4:
+                    return unidecode(str(obj_bs4['href']).replace('\r','').replace('\n','').strip())
+                else:
+                    return ''
         else:
-            return ''        
+            return ''
 
 Crawler()
